@@ -196,25 +196,6 @@ class InstagramScraper(object):
                 return response
             except (KeyboardInterrupt):
                 raise
-            except (requests.exceptions.RequestException, PartialContentException) as e:
-                if 'url' in kwargs:
-                    url = kwargs['url']
-                elif len(args) > 0:
-                    url = args[0]
-                if retry < MAX_RETRIES:
-                    self.logger.warning('Retry after exception {0} on {1}'.format(repr(e), url))
-                    self.sleep(retry_delay)
-                    retry_delay = min( 2 * retry_delay, MAX_RETRY_DELAY )
-                    retry = retry + 1
-                    continue
-                else:
-                    keep_trying = self._retry_prompt(url, repr(e))
-                    if keep_trying == True:
-                        retry = 0
-                        continue
-                    elif keep_trying == False:
-                        return
-                raise
 
     def get_json(self, *args, **kwargs):
         """Retrieve text from url. Return text as string or None if no data present """
